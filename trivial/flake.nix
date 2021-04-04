@@ -1,5 +1,5 @@
 {
-  description = "KK's collection of flake templates";
+  description = "Simple flake with flake-utils";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-20.09";
@@ -8,13 +8,22 @@
 
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachSystem [ "x86_64-linux" ] (system:
-      let pkgs = import nixpkgs { inherit system; };
+      let
+        pkgs = import nixpkgs { inherit system; };
+
+        hello = pkgs.hello;
+        helloApp = flake-utils.lib.mkApp { drv = hello; };
+
       in {
-        packages.hello = pkgs.hello;
+        packages = { hello = hello; };
+        defaultPackage = hello;
+
+        apps = { hello = helloApp; };
+        defaultApp = helloApp;
+
         devShell = pkgs.mkShell {
           inputs = [ pkgs.hello ];
-          nativeBuildInputs = with pkgs; [ cmake ];
+          nativeBuildInputs = [ ];
         };
-        defaultPackage = self.packages.${system}.hello;
       });
 }
