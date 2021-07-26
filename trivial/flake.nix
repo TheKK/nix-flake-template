@@ -22,7 +22,8 @@
         defaultApp = helloApp;
 
         devShell = pkgs.mkShell {
-          inputs = [ pkgs.hello ];
+          inputsFrom = [ pkgs.hello ];
+          buildInputs = [ ];
           nativeBuildInputs = [ ];
         };
       });
